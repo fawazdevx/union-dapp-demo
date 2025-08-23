@@ -5,43 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Union Testnet Starter — Transfers & Faucets</title>
     <meta name="description" content="Minimal Union testnet dashboard: latest cross-chain transfers via GraphQL + quick faucet & transfer links." />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://graphql.union.build" crossorigin />
     <style>
       :root {
-        --bg: #0b0f17; /* deep space */
-        --card: #121826;
+        --bg: #0b0f17;
+        --card: rgba(18,24,38,.7);
         --muted: #9aa4b2;
-        --text: #dbeafe; /* soft blue */
-        --accent: #7dd3fc; /* cyan */
-        --accent-2: #a78bfa; /* purple */
+        --text: #dbeafe;
+        --accent: #0ff;
+        --accent-2: #f0f;
         --ok: #34d399;
         --warn: #fbbf24;
         --err: #f87171;
       }
       * { box-sizing: border-box; }
-      html, body { height: 100%; }
+      html, body { height: 100%; margin: 0; font-family: 'Orbitron', sans-serif; background-color: var(--bg); color: var(--text); }
       body {
-        margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-        background: radial-gradient(1000px 600px at 80% -10%, rgba(124,58,237,.25), transparent), radial-gradient(800px 500px at -10% 110%, rgba(14,165,233,.2), transparent), var(--bg);
-        color: var(--text);
+        background: radial-gradient(ellipse at center, #0b0f17 0%, #000000 100%);
+        background-image: repeating-linear-gradient(0deg, rgba(0,255,255,.05), rgba(0,255,255,.05) 1px, transparent 1px, transparent 2px), repeating-linear-gradient(90deg, rgba(255,0,255,.05), rgba(255,0,255,.05) 1px, transparent 1px, transparent 2px);
       }
       .container { max-width: 980px; margin: 0 auto; padding: 24px; }
       header { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
       .brand { display:flex; align-items:center; gap:12px; }
-      .logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow: 0 8px 28px rgba(125,211,252,.25); }
-      h1 { font-size: clamp(22px, 3.5vw, 32px); margin: 0; letter-spacing:.3px; }
+      .logo img { height:32px; vertical-align:middle; margin-left:4px; filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0 0 6px var(--accent-2)); }
+      h1 { font-size: clamp(22px, 3.5vw, 32px); margin: 0; letter-spacing:.3px; color: var(--accent); text-shadow: 0 0 6px var(--accent), 0 0 12px var(--accent-2); }
       .actions { display:flex; gap: 10px; flex-wrap:wrap; }
-      a.btn { text-decoration: none; padding: 10px 14px; border-radius: 12px; background: #0f172a; border: 1px solid #202a44; color: var(--text); font-weight: 600; display:inline-flex; align-items:center; gap:8px; }
-      a.btn:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(125,211,252,.15); }
+      a.btn { text-decoration: none; padding: 10px 14px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; font-weight: 700; text-shadow: 0 0 4px #000; display:inline-flex; align-items:center; gap:8px; border: none; box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent-2); transition: all .2s ease-in-out; }
+      a.btn:hover { box-shadow: 0 0 16px var(--accent), 0 0 32px var(--accent-2), 0 0 48px var(--accent); transform: scale(1.05); }
       .grid { display:grid; grid-template-columns: 1fr; gap: 16px; }
       @media(min-width: 900px){ .grid { grid-template-columns: 1.4fr .6fr; } }
-      .card { background: rgba(18,24,38,.7); border: 1px solid #1f2937; backdrop-filter: blur(6px); border-radius: 16px; padding: 16px; }
+      .card { background: var(--card); border: 1px solid var(--accent); border-radius: 16px; padding: 16px; backdrop-filter: blur(6px); box-shadow: 0 0 12px var(--accent), 0 0 24px var(--accent-2); transition: transform .2s, box-shadow .3s; }
+      .card:hover { transform: translateY(-3px); box-shadow: 0 0 16px var(--accent), 0 0 32px var(--accent-2); }
       .card h2 { margin: 0 0 12px; font-size: 18px; font-weight: 700; }
       .muted { color: var(--muted); font-size: 13px; }
       .table { width: 100%; border-collapse: collapse; font-size: 14px; }
       .table th, .table td { padding: 10px 8px; border-bottom: 1px solid #1f2937; vertical-align: top; }
-      .table th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing:.2px; }
-      .pill { padding: 2px 8px; border-radius: 999px; border:1px solid #25314d; background:#0c1426; font-size:12px; color: var(--accent); }
+      .table th { text-align: left; color: var(--accent-2); font-weight: 600; font-size: 12px; letter-spacing:.2px; }
+      .pill { padding: 2px 8px; border-radius: 999px; border:1px solid var(--accent-2); color: var(--accent-2); font-size:12px; }
       .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
       footer { margin-top: 24px; color: var(--muted); font-size: 12px; text-align:center; }
       .small { font-size: 12px; }
@@ -52,14 +53,14 @@
       .success { color: var(--ok); }
       .caption { display: flex; align-items: center; justify-content: space-between; margin-bottom:8px; }
       .kbd { border: 1px solid #334155; border-bottom-width: 2px; border-radius: 8px; padding: 2px 6px; font-weight: 700; background:#0b1222; }
+      input.mono { border: 1px solid var(--accent); background: rgba(0,0,0,.3); color: var(--accent); box-shadow: 0 0 6px var(--accent); }
     </style>
   </head>
   <body>
     <div class="container">
       <header>
         <div class="brand">
-          <div class="logo"> <img src="https://union.build/favicon.ico" alt="Union" style="height:32px; vertical-align:middle; margin-left:4px;">
-</div>
+          <div class="logo"><img src="https://union.build/favicon.ico" alt="Union"></div>
           <div>
             <h1>Union Testnet Starter</h1>
             <div class="muted small">Live transfers from <span class="mono">graphql.union.build</span> + quick actions</div>
@@ -73,7 +74,6 @@
       </header>
 
       <div class="grid">
-        <!-- Transfers -->
         <section class="card" id="transfers-card">
           <div class="caption">
             <h2>Latest Transfers</h2>
@@ -98,7 +98,6 @@
           </div>
         </section>
 
-        <!-- Shortcuts / Faucets -->
         <aside class="card">
           <h2>Quick Start</h2>
           <ol class="small" style="line-height:1.6">
@@ -114,17 +113,14 @@
           </ul>
           <h2 style="margin-top:12px">Your Address Filter</h2>
           <label class="small muted" for="addr">Filter by canonical address (sender or receiver)</label>
-          <input id="addr" class="mono" placeholder="0xabc… or cosmos1…" style="width:100%; padding:10px; border-radius:10px; border:1px solid #334155; background:#0b1222; color:var(--text);" />
+          <input id="addr" class="mono" placeholder="0xabc… or cosmos1…" style="width:100%; padding:10px; border-radius:10px;" />
           <button id="apply" class="btn" style="margin-top:8px; width:100%">Apply Filter</button>
           <p class="muted small" style="margin-top:8px">Tip: paste your EVM or Cosmos canonical address to see only your transfers.</p>
         </aside>
       </div>
 
       <footer>
-        Built by <a href="https://github.com/fawazdevx" target="_blank" rel="noopener" style="color:var(--accent)">Unrealfdev</a>.  
-Not affiliated with <a href="https://union.build/" target="_blank" rel="noopener" style="color:var(--accent)">Union</a>.  
-Follow updates on <a href="https://x.com/fawaz2022oy" target="_blank" rel="noopener" style="color:var(--accent)">X</a>.  
-Data via <span class="mono">graphql.union.build</span>.
+        Built by <a href="https://github.com/fawazdevx" target="_blank" rel="noopener" style="color:var(--accent)">Unrealfdev</a>. Not affiliated with <a href="https://union.build/" target="_blank" rel="noopener" style="color:var(--accent)">Union</a>. Data via <span class="mono">graphql.union.build</span>.
       </footer>
     </div>
 
@@ -138,9 +134,9 @@ Data via <span class="mono">graphql.union.build</span>.
       const addrInput = document.getElementById("addr");
       const applyBtn = document.getElementById("apply");
 
-      let cursor = null; // sort_order cursor
-      let comparison = null; // "lt" or "gt"
-      let addressFilter = null; // canonical address to filter by
+      let cursor = null;
+      let comparison = null;
+      let addressFilter = null;
       let intervalId = null;
 
       const GQL = {
@@ -160,7 +156,7 @@ Data via <span class="mono">graphql.union.build</span>.
           const v = BigInt(amount);
           const d = BigInt(10) ** BigInt(decimals);
           const whole = v / d;
-          const frac = (v % d).toString().padStart(Number(decimals), '0').slice(0, 6); // 6dp
+          const frac = (v % d).toString().padStart(Number(decimals), '0').slice(0, 6);
           return `${whole}.${frac}`;
         } catch (e) { return amount; }
       }
@@ -193,13 +189,11 @@ Data via <span class="mono">graphql.union.build</span>.
           const json = await res.json();
           const items = json?.data?.v2_transfers ?? [];
           renderRows(items);
-          // update cursors
           if (items.length) {
-            prevBtn.disabled = false; // we can always go back once we have a page
+            prevBtn.disabled = false;
             nextBtn.disabled = false;
-            // store both ends
-            nextBtn.dataset.cursor = items[items.length - 1].sort_order; // for next page (lt)
-            prevBtn.dataset.cursor = items[0].sort_order; // for prev page (gt)
+            nextBtn.dataset.cursor = items[items.length - 1].sort_order;
+            prevBtn.dataset.cursor = items[0].sort_order;
           }
           statusText.textContent = `Loaded ${items.length} transfers`;
         } catch (e) {
@@ -211,33 +205,10 @@ Data via <span class="mono">graphql.union.build</span>.
         }
       }
 
-      // Pagination handlers
-      nextBtn.addEventListener('click', () => {
-        cursor = nextBtn.dataset.cursor || null;
-        comparison = 'lt'; // newer → older
-        fetchTransfers();
-      });
-      prevBtn.addEventListener('click', () => {
-        cursor = prevBtn.dataset.cursor || null;
-        comparison = 'gt'; // older → newer
-        fetchTransfers();
-      });
-
-      // Filter by address
-      applyBtn.addEventListener('click', () => {
-        const val = addrInput.value.trim();
-        addressFilter = val || null;
-        cursor = null; comparison = null; // reset pagination
-        fetchTransfers();
-      });
-
-      // Auto-refresh
-      function startAutoRefresh(){
-        if (intervalId) clearInterval(intervalId);
-        intervalId = setInterval(fetchTransfers, 5000);
-      }
-
-      // init
+      nextBtn.addEventListener('click', () => { cursor = nextBtn.dataset.cursor || null; comparison = 'lt'; fetchTransfers(); });
+      prevBtn.addEventListener('click', () => { cursor = prevBtn.dataset.cursor || null; comparison = 'gt'; fetchTransfers(); });
+      applyBtn.addEventListener('click', () => { const val = addrInput.value.trim(); addressFilter = val || null; cursor = null; comparison = null; fetchTransfers(); });
+      function startAutoRefresh(){ if (intervalId) clearInterval(intervalId); intervalId = setInterval(fetchTransfers, 5000); }
       fetchTransfers();
       startAutoRefresh();
     </script>
