@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react";
+
 import "./styles.css";
 
 const ENDPOINT = "https://graphql.union.build/v1/graphql";
@@ -128,7 +129,7 @@ const UnionDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              <Analytics />
+              
               {transfers.map((t, idx) => {
                 const rep = t.base_token_meta?.representations?.[0] ?? { name: "", symbol: "", decimals: 18 };
                 const amount = nanoToDecimal(t.base_amount, rep.decimals);
@@ -175,6 +176,8 @@ const UnionDashboard = () => {
       <footer>
         Built by <a href="https://github.com/fawazdevx" target="_blank" rel="noopener noreferrer" style={{ color:"var(--accent)" }}>Unrealfdev</a>. Not affiliated with <a href="https://union.build/" target="_blank" rel="noopener noreferrer" style={{ color:"var(--accent)" }}>Union</a>. Follow updates on <a href="https://x.com/fawaz2022oy" target="_blank" rel="noopener noreferrer" style={{ color:"var(--accent)" }}>X</a>. Data via <span className="mono">graphql.union.build</span>.
       </footer>
+      {/* 👇 Add Analytics once here
+      <Analytics /> */}
     </div>
   )
 }
