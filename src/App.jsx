@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/next"
 import "./styles.css";
 
 const ENDPOINT = "https://graphql.union.build/v1/graphql";
@@ -127,6 +128,7 @@ const UnionDashboard = () => {
               </tr>
             </thead>
             <tbody>
+              <Analytics />
               {transfers.map((t, idx) => {
                 const rep = t.base_token_meta?.representations?.[0] ?? { name: "", symbol: "", decimals: 18 };
                 const amount = nanoToDecimal(t.base_amount, rep.decimals);
